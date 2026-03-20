@@ -1,0 +1,16 @@
+# Local environment secrets
+.env
+.env.*
+!.envexample
+
+# Shell/runtime artifacts
+*.log
+*.tmp
+*.swp
+*.swo
+.state/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/

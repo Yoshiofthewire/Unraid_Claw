@@ -1,0 +1,30 @@
+# Unraid Monitor skill environment template
+# Copy values into your local runtime environment before running the skill/harness.
+
+# Required: Base URL for your Unraid server (include protocol).
+UNRAID_BASE_URL=https://tower.local
+
+# Required: API key from Unraid API settings.
+# Keep this secret. Do not commit real keys.
+UNRAID_API_KEY=replace_with_your_unraid_api_key
+
+# Optional: request timeout in seconds.
+UNRAID_TIMEOUT_SECONDS=10
+
+# Optional: state directory for snapshot and log artifacts.
+# Default is repository-local .state directory.
+# UNRAID_STATE_DIR=/path/to/state
+
+# Optional: webhook notification settings.
+# Set webhook URL to enable HTTP notifications.
+# UNRAID_NOTIFY_WEBHOOK_URL=https://example.invalid/webhook
+UNRAID_NOTIFY_TIMEOUT_SECONDS=8
+UNRAID_NOTIFY_HOST_LABEL=tower
+
+# Optional: alert thresholds.
+UNRAID_CPU_WARN_PERCENT=85
+UNRAID_CPU_CRIT_PERCENT=95
+UNRAID_MEM_WARN_PERCENT=85
+UNRAID_MEM_CRIT_PERCENT=95
+UNRAID_STOPPED_WARN_COUNT=1
+UNRAID_STOPPED_CRIT_COUNT=3

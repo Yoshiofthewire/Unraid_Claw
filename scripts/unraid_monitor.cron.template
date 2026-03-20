@@ -1,0 +1,18 @@
+# Unraid Claw cron template
+#
+# Usage:
+# 1) Replace /path/to/Unraid_Claw with your repository path.
+# 2) Choose one schedule line (15m or 5m) and keep only one.
+# 3) Install with:
+#      crontab -l > /tmp/current.cron 2>/dev/null || true
+#      cat /tmp/current.cron scripts/unraid_monitor.cron.template | crontab -
+#
+# Notes:
+# - Always source .env so credentials are not embedded in crontab.
+# - Logs are written to .state/logs/cron.log by default.
+
+# Every 15 minutes (recommended baseline)
+*/15 * * * * cd /path/to/Unraid_Claw && set -a && . ./.env && set +a && ./scripts/unraid_cron_runner.sh >> ./.state/logs/cron.log 2>&1
+
+# Every 5 minutes (tighter monitoring)
+# */5 * * * * cd /path/to/Unraid_Claw && set -a && . ./.env && set +a && ./scripts/unraid_cron_runner.sh >> ./.state/logs/cron.log 2>&1
