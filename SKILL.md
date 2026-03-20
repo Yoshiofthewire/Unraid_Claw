@@ -16,6 +16,8 @@ metadata:
 
 Use this skill when the user asks to check Unraid system health, array/parity status, or Docker container status.
 
+Located at: https://github.com/Yoshiofthewire/unraid-claw
+
 ## Required Configuration
 
 Before running any script, ensure the Unraid server is configured:
