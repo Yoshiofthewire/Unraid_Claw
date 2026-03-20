@@ -9,6 +9,11 @@ Use this skill when the user asks to check Unraid system health, array/parity st
 
 ## Required Configuration
 
+Before running any script, ensure the Unraid server is configured:
+- GraphQL is enabled in Unraid API settings.
+- A valid Unraid API key is generated in Unraid API settings.
+- `UNRAID_API_KEY` uses that generated key.
+
 Read these environment variables at runtime:
 - `UNRAID_BASE_URL` (example: `https://tower.local`)
 - `UNRAID_API_KEY`
@@ -34,7 +39,7 @@ If a required variable is missing, stop and return:
 
 - Never hardcode secrets in prompts, files, or commands.
 - Never print API keys, auth headers, or full request headers.
-- Authenticate using: `Authorization: Bearer <UNRAID_API_KEY>`.
+- Authenticate using: `x-api-key: <UNRAID_API_KEY>`.
 - Redact sensitive data in all error messages.
 - Perform read-only operations only.
 - Never execute GraphQL mutations.
@@ -112,6 +117,7 @@ Script exit mapping for automation:
 - Timeout: return partial data and identify timed-out section(s).
 - Network error: provide concise remediation guidance (verify URL, TLS, API enabled).
 - Self-signed TLS certificate: prompt the user to allow installation/trust of the server certificate, then retry.
+- Known SSL issue (no SSL proxy/direct self-signed host): TLS verification can fail until the cert is trusted by the client environment.
 - Auth error: use the exact auth-failure message above.
 - Unknown GraphQL errors: provide a redacted, concise summary.
 

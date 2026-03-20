@@ -1,29 +1,18 @@
 #!/usr/bin/env bash
 set -u
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/unraid_common.sh"
+
 # Read-only connection/auth smoke test for the Unraid GraphQL API.
 # Output is intentionally concise and excludes secrets.
 
-BASE_URL="${UNRAID_BASE_URL:-}"
-API_KEY="${UNRAID_API_KEY:-}"
-TIMEOUT="${UNRAID_TIMEOUT_SECONDS:-10}"
+require_base_url
+require_api_key
+require_timeout
+require_command "curl" "required for Unraid API calls"
 
-if [[ -z "$BASE_URL" ]]; then
-  echo "FAIL: Unraid base URL is not configured. Set UNRAID_BASE_URL and retry."
-  exit 2
-fi
-
-if [[ -z "$API_KEY" ]]; then
-  echo "FAIL: Unraid API key is not configured. Set UNRAID_API_KEY and retry."
-  exit 2
-fi
-
-if ! [[ "$TIMEOUT" =~ ^[0-9]+$ ]]; then
-  echo "FAIL: UNRAID_TIMEOUT_SECONDS must be an integer."
-  exit 2
-fi
-
-ENDPOINT="${BASE_URL%/}/graphql"
+ENDPOINT="$(endpoint)"
 QUERY='{"query":"query HealthCheck { __typename info { os { release uptime } } }"}'
 
 body_file="$(mktemp)"
@@ -33,15 +22,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-http_code="$(curl -sS \
-  --connect-timeout "$TIMEOUT" \
-  --max-time "$TIMEOUT" \
-  -o "$body_file" \
-  -w "%{http_code}" \
-  -X POST "$ENDPOINT" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer ${API_KEY}" \
-  --data "$QUERY" 2>"$err_file")"
+http_code="$(graphql_post "$QUERY" "$body_file" "$err_file")"
 curl_status=$?
 
 if [[ $curl_status -ne 0 ]]; then
@@ -65,6 +46,10 @@ if command -v jq >/dev/null 2>&1; then
   if [[ "$has_errors" == "true" ]]; then
     first_error="$(jq -r '.errors[0].message // "Unknown GraphQL error"' "$body_file" 2>/dev/null)"
     echo "FAIL: GraphQL responded with errors."
+    if [[ "$first_error" == "Invalid CSRF token" ]]; then
+      echo "DETAIL: Invalid CSRF token. If using a login-gated/reverse-proxy URL, switch UNRAID_BASE_URL to a direct Unraid API URL or set UNRAID_CSRF_TOKEN + UNRAID_SESSION_COOKIE in .env."
+      exit 6
+    fi
     echo "DETAIL: ${first_error}"
     exit 6
   fi

@@ -31,10 +31,31 @@ This repository contains an OpenClaw skill that checks Unraid health through the
 
 ## Prerequisites
 
-- Unraid API enabled on your server
-- An Unraid API key
+- Unraid API with GraphQL enabled on your server
+- An Unraid API key generated from Unraid API settings
 - curl installed
 - jq installed
+
+## Unraid server setup
+
+1. In Unraid, open API settings and enable GraphQL.
+2. Generate a new Unraid API key.
+3. Copy the key into your local `.env` as `UNRAID_API_KEY`.
+
+Known SSL note:
+- If you are not using an SSL proxy and your Unraid host uses a self-signed certificate, TLS verification may fail until that cert is trusted on the machine running these scripts.
+
+Linux cert trust example (Debian/Ubuntu):
+1. Export the server certificate:
+   `openssl s_client -showcerts -connect <UNRAID_HOST>:443 </dev/null 2>/dev/null | openssl x509 -outform PEM > unraid-selfsigned.crt`
+2. Install it into the system trust store:
+   `sudo cp unraid-selfsigned.crt /usr/local/share/ca-certificates/unraid-selfsigned.crt`
+3. Refresh trust store:
+   `sudo update-ca-certificates`
+4. Re-run connection test:
+   `./scripts/unraid_connection_test.sh`
+
+If your distro uses a different trust mechanism, follow the distro-specific CA trust workflow.
 
 ## Setup
 
@@ -44,6 +65,8 @@ This repository contains an OpenClaw skill that checks Unraid health through the
 2. Edit .env and set your values:
    UNRAID_BASE_URL=https://tower.local
    UNRAID_API_KEY=your_real_api_key
+   UNRAID_CSRF_TOKEN=your_csrf_token_if_required   # optional
+   UNRAID_SESSION_COOKIE=your_cookie_if_required   # optional
    UNRAID_TIMEOUT_SECONDS=10
    UNRAID_NOTIFY_WEBHOOK_URL=https://example.invalid/webhook   # optional
 
@@ -65,7 +88,8 @@ Expected outcomes:
 Common fail cases:
 - Missing UNRAID_BASE_URL or UNRAID_API_KEY
 - Invalid API key (401/403)
-- TLS or network routing issues
+- Invalid CSRF token (use direct Unraid URL, or set UNRAID_CSRF_TOKEN + UNRAID_SESSION_COOKIE for login-gated proxies)
+- TLS or network routing issues (including self-signed cert trust failures on non-proxy setups)
 
 ## Using with OpenClaw
 

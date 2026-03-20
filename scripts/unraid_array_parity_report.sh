@@ -56,7 +56,7 @@ jq -r '
   | if length == 0 then
       "- None"
     else
-      .[] | "- \(.name // \"unknown\"): status=\(.status // \"unknown\"), smart=\(.smartStatus // \"unknown\"), temp=\(.temperature // \"unknown\")"
+      .[] | "- \(.name // "unknown"): status=\(.status // "unknown"), smart=\(.smartStatus // "unknown"), temp=\(.temperature // "unknown")"
     end
 ' "$snapshot_file"
 

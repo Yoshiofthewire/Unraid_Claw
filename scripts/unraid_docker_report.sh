@@ -44,7 +44,7 @@ echo "- Stopped: ${stopped}"
 
 if [[ "$stopped" -gt 0 ]]; then
   echo "- Stopped Containers:"
-  jq -r '(.data.docker.containers // []) | map(select((.state // "") | ascii_downcase != "running")) | .[] | "  - \(.name // \"unknown\"): \(.status // \"unknown\")"' "$snapshot_file"
+  jq -r '(.data.docker.containers // []) | map(select((.state // "") | ascii_downcase != "running")) | .[] | "  - \(.name // "unknown"): \(.status // "unknown")"' "$snapshot_file"
 fi
 
 exit 0

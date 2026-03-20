@@ -69,18 +69,33 @@ graphql_post() {
   local body_file="$2"
   local err_file="$3"
   local timeout="${UNRAID_TIMEOUT_SECONDS:-10}"
+  local csrf_token="${UNRAID_CSRF_TOKEN:-}"
+  local session_cookie="${UNRAID_SESSION_COOKIE:-}"
   local ep
+  local -a curl_args
   ep="$(endpoint)"
 
-  curl -sS \
-    --connect-timeout "$timeout" \
-    --max-time "$timeout" \
-    -o "$body_file" \
-    -w "%{http_code}" \
-    -X POST "$ep" \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer ${UNRAID_API_KEY}" \
-    --data "$query_json" 2>"$err_file"
+  curl_args=(
+    -sS
+    --connect-timeout "$timeout"
+    --max-time "$timeout"
+    -o "$body_file"
+    -w "%{http_code}"
+    -X POST "$ep"
+    -H "Content-Type: application/json"
+    -H "x-api-key: ${UNRAID_API_KEY}"
+    -H "X-Requested-With: XMLHttpRequest"
+  )
+
+  if [[ -n "$csrf_token" ]]; then
+    curl_args+=( -H "X-CSRF-TOKEN: ${csrf_token}" )
+  fi
+
+  if [[ -n "$session_cookie" ]]; then
+    curl_args+=( -H "Cookie: ${session_cookie}" )
+  fi
+
+  curl "${curl_args[@]}" --data "$query_json" 2>"$err_file"
 }
 
 compute_health_status_from_snapshot() {
@@ -121,7 +136,7 @@ compute_health_status_from_snapshot() {
           | map(select((normsmart(.smartStatus)) as $s | ($s != "" and $s != "ok" and $s != "passed" and $s != "healthy" and $s != "unknown")))) as $disk_warnings
       | ($root.graphql_errors // []) as $graphql_errors
       | [] as $alerts
-      | (if ($graphql_errors | length) > 0 then . + ["GraphQL returned errors; snapshot may be partial."] else . end) as $alerts
+        | (if ($graphql_errors | length) > 0 then $alerts + ["GraphQL returned errors; snapshot may be partial."] else $alerts end) as $alerts
       | (if $array_errors > 0 then $alerts + ["Array reports " + ($array_errors|tostring) + " errors."] else $alerts end) as $alerts
       | (if $parity_errors > 0 then $alerts + ["Parity reports " + ($parity_errors|tostring) + " errors."] else $alerts end) as $alerts
       | (if ($disk_warnings | length) > 0 then $alerts + ["Disk SMART warnings: " + (($disk_warnings|map(.name // "unknown")|join(", ")))] else $alerts end) as $alerts
