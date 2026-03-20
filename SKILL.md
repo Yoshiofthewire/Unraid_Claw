@@ -21,7 +21,6 @@ Read these environment variables at runtime:
 Optional:
 - `UNRAID_TIMEOUT_SECONDS` (default: `10`)
 - `UNRAID_STATE_DIR` (default: repo-local `.state`)
-- `UNRAID_NOTIFY_WEBHOOK_URL` (enable HTTP notifications)
 - `UNRAID_NOTIFY_TIMEOUT_SECONDS` (default: `8`)
 - `UNRAID_NOTIFY_HOST_LABEL` (default: host name)
 - `UNRAID_CPU_WARN_PERCENT` (default: `85`)
@@ -48,9 +47,6 @@ UNRAID_TIMEOUT_SECONDS=10
 # Default is repository-local .state directory.
 # UNRAID_STATE_DIR=/path/to/state
 
-# Optional: webhook notification settings.
-# Set webhook URL to enable HTTP notifications.
-# UNRAID_NOTIFY_WEBHOOK_URL=https://example.invalid/webhook
 UNRAID_NOTIFY_TIMEOUT_SECONDS=8
 UNRAID_NOTIFY_HOST_LABEL=tower
 
