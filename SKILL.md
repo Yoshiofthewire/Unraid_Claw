@@ -41,13 +41,6 @@ UNRAID_BASE_URL=https://tower.local
 # Keep this secret. Do not commit real keys.
 UNRAID_API_KEY=replace_with_your_unraid_api_key
 
-# Optional: CSRF token for setups that require explicit CSRF header.
-# UNRAID_CSRF_TOKEN=replace_with_your_unraid_csrf_token
-
-# Optional: session cookie for login-gated/reverse-proxy setups.
-# Format example: session=abc123; other_cookie=value
-# UNRAID_SESSION_COOKIE=replace_with_cookie_string
-
 # Optional: request timeout in seconds.
 UNRAID_TIMEOUT_SECONDS=10
 
