@@ -1,6 +1,15 @@
 ---
 name: unraid-claw
 description: Query an Unraid server via GraphQL for system, array, and Docker status in read-only mode.
+metadata:
+  openclaw:
+    requires:
+      env:
+        - UNRAID_API_KEY
+        - UNRAID_BASE_URL
+      bins:
+        - curl
+    primaryEnv: UNRAID_API_KEY
 ---
 
 # Unraid Claw Skill
