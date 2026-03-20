@@ -31,6 +31,41 @@ Optional:
 - `UNRAID_STOPPED_WARN_COUNT` (default: `1`)
 - `UNRAID_STOPPED_CRIT_COUNT` (default: `3`)
 
+Template `.envexample` (copy to `.env` and fill in real values):
+
+```env
+# Required: Base URL for your Unraid server (include protocol).
+UNRAID_BASE_URL=https://tower.local
+
+# Required: API key from Unraid API settings.
+# Keep this secret. Do not commit real keys.
+UNRAID_API_KEY=replace_with_your_unraid_api_key
+
+# Optional: CSRF token for setups that require explicit CSRF header.
+# UNRAID_CSRF_TOKEN=replace_with_your_unraid_csrf_token
+
+# Optional: session cookie for login-gated/reverse-proxy setups.
+# Format example: session=abc123; other_cookie=value
+# UNRAID_SESSION_COOKIE=replace_with_cookie_string
+
+# Optional: request timeout in seconds.
+UNRAID_TIMEOUT_SECONDS=10
+
+# Optional: state directory for snapshot and log artifacts.
+# Default is repository-local .state directory.
+# UNRAID_STATE_DIR=/path/to/state
+
+# Optional: webhook notification settings.
+# Set webhook URL to enable HTTP notifications.
+# UNRAID_NOTIFY_WEBHOOK_URL=https://example.invalid/webhook
+UNRAID_NOTIFY_TIMEOUT_SECONDS=8
+UNRAID_NOTIFY_HOST_LABEL=tower
+
+# Optional: alert thresholds.
+UNRAID_STOPPED_WARN_COUNT=1
+UNRAID_STOPPED_CRIT_COUNT=3
+```
+
 If a required variable is missing, stop and return:
 - `Unraid API key is not configured. Set UNRAID_API_KEY and retry.`
 - `Unraid base URL is not configured. Set UNRAID_BASE_URL and retry.`
