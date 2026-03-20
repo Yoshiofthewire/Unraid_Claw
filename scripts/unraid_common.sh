@@ -133,7 +133,7 @@ compute_health_status_from_snapshot() {
       | ($root.data.docker.containers // []) as $containers
       | ($containers | map(select((.state // "")|ascii_downcase != "running"))) as $stopped
       | ($root.data.array.disks // []
-          | map(select((normsmart(.smartStatus)) as $s | ($s != "" and $s != "ok" and $s != "passed" and $s != "healthy" and $s != "unknown")))) as $disk_warnings
+          | map(select((normsmart(.smartStatus)) as $s | ($s != "" and $s != "ok" and $s != "disk_ok" and $s != "passed" and $s != "healthy" and $s != "unknown")))) as $disk_warnings
       | ($root.graphql_errors // []) as $graphql_errors
       | [] as $alerts
         | (if ($graphql_errors | length) > 0 then $alerts + ["GraphQL returned errors; snapshot may be partial."] else $alerts end) as $alerts
