@@ -47,7 +47,7 @@ if command -v jq >/dev/null 2>&1; then
     first_error="$(jq -r '.errors[0].message // "Unknown GraphQL error"' "$body_file" 2>/dev/null)"
     echo "FAIL: GraphQL responded with errors."
     if [[ "$first_error" == "Invalid CSRF token" ]]; then
-      echo "DETAIL: Invalid CSRF token. If using a login-gated/reverse-proxy URL, switch UNRAID_BASE_URL to a direct Unraid API URL or set UNRAID_CSRF_TOKEN + UNRAID_SESSION_COOKIE in .env."
+      echo "DETAIL: Invalid CSRF token. If using a login-gated/reverse-proxy URL, switch UNRAID_BASE_URL to a direct Unraid API URL."
       exit 6
     fi
     echo "DETAIL: ${first_error}"

@@ -64,8 +64,6 @@ If your distro uses a different trust mechanism, follow the distro-specific CA t
 2. Edit .env and set your values:
    UNRAID_BASE_URL=https://tower.local
    UNRAID_API_KEY=your_real_api_key
-   UNRAID_CSRF_TOKEN=your_csrf_token_if_required   # optional
-   UNRAID_SESSION_COOKIE=your_cookie_if_required   # optional
    UNRAID_TIMEOUT_SECONDS=10
 
 3. Load environment variables into your shell:
@@ -86,7 +84,7 @@ Expected outcomes:
 Common fail cases:
 - Missing UNRAID_BASE_URL or UNRAID_API_KEY
 - Invalid API key (401/403)
-- Invalid CSRF token (use direct Unraid URL, or set UNRAID_CSRF_TOKEN + UNRAID_SESSION_COOKIE for login-gated proxies)
+- Invalid CSRF token (use a direct Unraid URL instead of a login-gated proxy URL)
 - TLS or network routing issues (including self-signed cert trust failures on non-proxy setups)
 
 ## Using with OpenClaw
